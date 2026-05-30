@@ -12,8 +12,10 @@ import EmptyState from "@/components/EmptyState";
 
 export default function VendorDashboard() {
   const vendor = getVendor(DEMO_VENDOR_ID);
-  const products = useProductStore((s) => s.products.filter((p) => p.vendorId === DEMO_VENDOR_ID));
-  const bookings = useBookingStore((s) => s.bookings.filter((b) => b.vendorId === DEMO_VENDOR_ID));
+  const allProducts = useProductStore((s) => s.products);
+  const allBookings = useBookingStore((s) => s.bookings);
+  const products = allProducts.filter((p) => p.vendorId === DEMO_VENDOR_ID);
+  const bookings = allBookings.filter((b) => b.vendorId === DEMO_VENDOR_ID);
 
   const earnings = bookings
     .filter((b) => b.paymentStatus === "paid")

@@ -17,7 +17,8 @@ const TABS: { key: "pending" | "active" | "all"; label: string }[] = [
 ];
 
 export default function VendorRequests() {
-  const bookings = useBookingStore((s) => s.bookings.filter((b) => b.vendorId === DEMO_VENDOR_ID));
+  const allBookings = useBookingStore((s) => s.bookings);
+  const bookings = allBookings.filter((b) => b.vendorId === DEMO_VENDOR_ID);
   const setStatus = useBookingStore((s) => s.setStatus);
   const pushNotif = useNotificationStore((s) => s.push);
   const products = useProductStore((s) => s.products);

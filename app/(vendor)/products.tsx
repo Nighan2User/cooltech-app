@@ -10,7 +10,8 @@ import EmptyState from "@/components/EmptyState";
 
 export default function VendorProducts() {
   const router = useRouter();
-  const products = useProductStore((s) => s.products.filter((p) => p.vendorId === DEMO_VENDOR_ID));
+  const allProducts = useProductStore((s) => s.products);
+  const products = allProducts.filter((p) => p.vendorId === DEMO_VENDOR_ID);
   const toggleAvailability = useProductStore((s) => s.toggleAvailability);
   const deleteProduct = useProductStore((s) => s.deleteProduct);
 

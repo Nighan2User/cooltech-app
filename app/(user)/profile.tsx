@@ -19,7 +19,8 @@ interface Row {
 export default function Profile() {
   const router = useRouter();
   const { user, logout } = useAuthStore();
-  const bookings = useBookingStore((s) => s.bookings.filter((b) => b.userId === "u1" || b.userId === user?.id));
+  const allBookings = useBookingStore((s) => s.bookings);
+  const bookings = allBookings.filter((b) => b.userId === "u1" || b.userId === user?.id);
   const favCount = useFavoritesStore((s) => s.ids.length);
 
   const confirmLogout = () => {
