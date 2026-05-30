@@ -4,7 +4,7 @@ export const NOTIFICATIONS: AppNotification[] = [
   {
     id: "n1",
     title: "Booking Confirmed",
-    body: "Your booking for Heavy-Duty Power Drill has been approved by ProTool Rentals.",
+    body: "Your booking for Excavator has been approved by ProTool Rentals.",
     type: "booking",
     read: false,
     createdAt: "2026-05-29T10:30:00Z",
@@ -28,7 +28,7 @@ export const NOTIFICATIONS: AppNotification[] = [
   {
     id: "n4",
     title: "Rental Update",
-    body: "Your PA Sound System rental is due for return tomorrow.",
+    body: "Your Mobile Crane rental is due for return tomorrow.",
     type: "update",
     read: true,
     createdAt: "2026-05-26T09:45:00Z",

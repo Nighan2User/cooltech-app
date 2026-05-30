@@ -1,163 +1,280 @@
 import { Product } from "@/types";
 
-export const PRODUCTS: Product[] = [
-  {
-    id: "p1",
-    vendorId: "v1",
-    title: "Heavy-Duty Power Drill",
-    description:
-      "Professional cordless power drill with two batteries, charger, and a full bit set. Ideal for construction and home improvement projects. Brushless motor delivers consistent torque.",
-    price: 18,
-    images: [
-      "https://images.unsplash.com/photo-1504148455328-c376907d081c?w=800",
-      "https://images.unsplash.com/photo-1572981779307-38b8cabb2407?w=800",
-    ],
-    category: "tools",
-    availability: true,
-    location: "New York, NY",
-    rating: 4.6,
-    reviewsCount: 34,
-    featured: true,
-    popular: true,
-    createdAt: "2024-04-01",
-  },
-  {
-    id: "p2",
-    vendorId: "v2",
-    title: "Portable Air Conditioner 12000 BTU",
-    description:
-      "Powerful portable AC unit that cools rooms up to 400 sq ft. Includes remote control, window kit, and dehumidifier mode. Energy efficient and quiet operation.",
-    price: 35,
-    images: [
-      "https://images.unsplash.com/photo-1631545806609-c2b999c8f6a6?w=800",
-      "https://images.unsplash.com/photo-1614633833026-0820552978b6?w=800",
-    ],
-    category: "cooling",
-    availability: true,
-    location: "Los Angeles, CA",
-    rating: 4.4,
-    reviewsCount: 21,
-    featured: true,
-    popular: true,
-    createdAt: "2024-04-05",
-  },
-  {
-    id: "p3",
-    vendorId: "v3",
-    title: "Professional PA Sound System",
-    description:
-      "Complete event sound system with two speakers, mixer, wireless microphones, and all cables. Perfect for parties, weddings, and corporate events up to 200 guests.",
-    price: 75,
-    images: [
-      "https://images.unsplash.com/photo-1545454675-3531b543be5d?w=800",
-      "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=800",
-    ],
-    category: "events",
-    availability: true,
-    location: "Chicago, IL",
-    rating: 4.8,
-    reviewsCount: 52,
-    featured: true,
-    popular: true,
-    createdAt: "2024-03-28",
-  },
-  {
-    id: "p4",
-    vendorId: "v4",
-    title: "Mini Excavator 1.5 Ton",
-    description:
-      "Compact mini excavator suitable for digging, trenching, and landscaping. Easy to operate with comfortable cabin. Delivery and pickup available within city limits.",
-    price: 220,
-    images: [
-      "https://images.unsplash.com/photo-1581094288338-2314dddb7ece?w=800",
-      "https://images.unsplash.com/photo-1485291571150-772bcfc10da5?w=800",
-    ],
-    category: "machinery",
-    availability: true,
-    location: "Houston, TX",
-    rating: 4.9,
-    reviewsCount: 18,
-    featured: false,
-    popular: true,
-    createdAt: "2024-02-15",
-  },
-  {
-    id: "p5",
-    vendorId: "v1",
-    title: "Circular Saw Pro",
-    description:
-      "7-1/4 inch circular saw with laser guide and carbide-tipped blade. Cuts through wood, plywood, and laminate with precision. Lightweight and ergonomic.",
-    price: 14,
-    images: [
-      "https://images.unsplash.com/photo-1530124566582-a618bc2615dc?w=800",
-    ],
-    category: "tools",
-    availability: false,
-    location: "New York, NY",
-    rating: 4.3,
-    reviewsCount: 27,
-    featured: false,
-    popular: false,
-    createdAt: "2024-04-10",
-  },
-  {
-    id: "p6",
-    vendorId: "v2",
-    title: "Industrial Floor Fan",
-    description:
-      "High-velocity 24 inch industrial floor fan. Three speed settings and tilting head for directional airflow. Great for warehouses, garages, and events.",
-    price: 22,
-    images: [
-      "https://images.unsplash.com/photo-1565130838609-c3a86655db61?w=800",
-    ],
-    category: "cooling",
-    availability: true,
-    location: "Los Angeles, CA",
-    rating: 4.1,
-    reviewsCount: 12,
-    featured: false,
-    popular: false,
-    createdAt: "2024-04-12",
-  },
-  {
-    id: "p7",
-    vendorId: "v3",
-    title: "4K Projector & Screen",
-    description:
-      "Ultra HD 4K projector with 120 inch motorized screen. HDMI, USB, and wireless casting support. Perfect for presentations, movie nights, and outdoor events.",
-    price: 60,
-    images: [
-      "https://images.unsplash.com/photo-1626379953822-baec19c3accd?w=800",
-    ],
-    category: "electronics",
-    availability: true,
-    location: "Chicago, IL",
-    rating: 4.7,
-    reviewsCount: 41,
-    featured: true,
-    popular: false,
-    createdAt: "2024-03-30",
-  },
-  {
-    id: "p8",
-    vendorId: "v4",
-    title: "Diesel Generator 10kVA",
-    description:
-      "Reliable 10kVA diesel generator for construction sites and events. Low noise enclosure, automatic voltage regulation, and 8-hour runtime per tank.",
-    price: 120,
-    images: [
-      "https://images.unsplash.com/photo-1592833167665-ebf9d00a4799?w=800",
-    ],
-    category: "industrial",
-    availability: true,
-    location: "Houston, TX",
-    rating: 4.5,
-    reviewsCount: 9,
-    featured: false,
-    popular: true,
-    createdAt: "2024-02-20",
-  },
+/**
+ * Products are generated from the equipment taxonomy below so the catalog stays
+ * easy to maintain. Each category has a representative image and a base daily
+ * price; individual items vary deterministically around those values.
+ */
+
+const LOCATIONS = [
+  "New York, NY",
+  "Los Angeles, CA",
+  "Chicago, IL",
+  "Houston, TX",
+  "Phoenix, AZ",
+  "Dallas, TX",
 ];
+
+const VENDOR_IDS = ["v1", "v2", "v3", "v4"];
+
+// One representative image per category (Unsplash).
+const CATEGORY_IMAGE: Record<string, string> = {
+  construction: "https://images.unsplash.com/photo-1581094288338-2314dddb7ece?w=800",
+  earthmoving: "https://images.unsplash.com/photo-1579532536935-619928decd08?w=800",
+  lifting: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=800",
+  aerial: "https://images.unsplash.com/photo-1599707367072-cd6ada2bc375?w=800",
+  "power-tools": "https://images.unsplash.com/photo-1504148455328-c376907d081c?w=800",
+  "hand-tools": "https://images.unsplash.com/photo-1530124566582-a618bc2615dc?w=800",
+  concrete: "https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=800",
+  welding: "https://images.unsplash.com/photo-1517524008697-84bbe3c3fd98?w=800",
+  electrical: "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=800",
+  generators: "https://images.unsplash.com/photo-1592833167665-ebf9d00a4799?w=800",
+  "air-compressors": "https://images.unsplash.com/photo-1572981779307-38b8cabb2407?w=800",
+  cleaning: "https://images.unsplash.com/photo-1581578017093-cd30fce4eeb7?w=800",
+  gardening: "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=800",
+  agriculture: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800",
+  survey: "https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=800",
+  pumps: "https://images.unsplash.com/photo-1607400201515-c2c41c07d307?w=800",
+  industrial: "https://images.unsplash.com/photo-1565793298595-6a879b1d9492?w=800",
+  safety: "https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=800",
+  event: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=800",
+  vehicles: "https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?w=800",
+};
+
+// Base daily price (USD) per category.
+const CATEGORY_BASE_PRICE: Record<string, number> = {
+  construction: 220,
+  earthmoving: 190,
+  lifting: 150,
+  aerial: 130,
+  "power-tools": 22,
+  "hand-tools": 9,
+  concrete: 60,
+  welding: 48,
+  electrical: 55,
+  generators: 95,
+  "air-compressors": 42,
+  cleaning: 38,
+  gardening: 28,
+  agriculture: 160,
+  survey: 75,
+  pumps: 58,
+  industrial: 85,
+  safety: 32,
+  event: 68,
+  vehicles: 115,
+};
+
+// Equipment taxonomy: category id -> list of product titles.
+const TAXONOMY: Record<string, string[]> = {
+  construction: [
+    "Excavator",
+    "Mini Excavator",
+    "Backhoe Loader",
+    "Skid Steer Loader",
+    "Wheel Loader",
+    "Bulldozer",
+    "Motor Grader",
+    "Road Roller",
+    "Concrete Mixer",
+    "Concrete Pump",
+    "Rebar Cutter & Bender",
+  ],
+  earthmoving: [
+    "Excavator",
+    "Trencher",
+    "Compactor",
+    "Soil Stabilizer",
+    "Dumper",
+    "Tipper",
+  ],
+  lifting: [
+    "Mobile Crane",
+    "Tower Crane",
+    "Forklift",
+    "Telehandler",
+    "Chain Pulley Block",
+    "Hoist",
+    "Hydraulic Jack",
+    "Pallet Truck",
+  ],
+  aerial: [
+    "Scissor Lift",
+    "Boom Lift",
+    "Spider Lift",
+    "Man Lift",
+    "Cherry Picker",
+  ],
+  "power-tools": [
+    "Rotary Hammer",
+    "Demolition Hammer",
+    "Angle Grinder",
+    "Circular Saw",
+    "Impact Wrench",
+    "Drill Machine",
+    "Heat Gun",
+    "Electric Planer",
+  ],
+  "hand-tools": [
+    "Spanner Set",
+    "Socket Set",
+    "Pipe Wrench",
+    "Torque Wrench",
+    "Screwdriver Set",
+    "Cutting Pliers",
+    "Measuring Tools",
+  ],
+  concrete: [
+    "Core Cutting Machine",
+    "Wall Cutter",
+    "Floor Cutter",
+    "Concrete Vibrator",
+    "Power Trowel",
+    "Concrete Mixer",
+    "Tile Cutter",
+  ],
+  welding: [
+    "Arc Welding Machine",
+    "MIG Welder",
+    "TIG Welder",
+    "Plasma Cutter",
+    "Gas Cutting Set",
+    "Welding Generator",
+  ],
+  electrical: [
+    "Cable Pulling Machine",
+    "Insulation Tester",
+    "Earth Tester",
+    "Cable Locator",
+    "Transformer",
+    "Distribution Box",
+  ],
+  generators: [
+    "Portable Generator",
+    "Diesel Generator",
+    "Silent Generator",
+    "Lighting Tower",
+    "UPS System",
+  ],
+  "air-compressors": [
+    "Portable Compressor",
+    "Jack Hammer",
+    "Rock Drill",
+    "Pneumatic Grinder",
+    "Pneumatic Impact Wrench",
+  ],
+  cleaning: [
+    "Pressure Washer",
+    "Industrial Vacuum Cleaner",
+    "Floor Scrubber",
+    "Road Sweeper",
+    "Steam Cleaner",
+  ],
+  gardening: [
+    "Lawn Mower",
+    "Brush Cutter",
+    "Hedge Trimmer",
+    "Earth Auger",
+    "Chainsaw",
+    "Leaf Blower",
+  ],
+  agriculture: [
+    "Tractor",
+    "Rotavator",
+    "Seed Drill",
+    "Power Tiller",
+    "Sprayer",
+    "Harvester",
+  ],
+  survey: [
+    "Total Station",
+    "Auto Level",
+    "GPS Survey Equipment",
+    "Laser Level",
+    "Measuring Wheel",
+  ],
+  pumps: [
+    "Submersible Pump",
+    "Dewatering Pump",
+    "Sludge Pump",
+    "High-Pressure Pump",
+    "Water Transfer Pump",
+  ],
+  industrial: [
+    "Hydraulic Power Pack",
+    "Material Handling Trolley",
+    "Industrial Fan",
+    "Industrial Heater",
+    "Dust Collector",
+  ],
+  safety: [
+    "Scaffolding",
+    "Mobile Tower",
+    "Safety Harness",
+    "Barricade",
+    "Gas Detector",
+  ],
+  event: [
+    "Portable Toilet",
+    "Temporary Fencing",
+    "Lighting Tower",
+    "Portable Generator",
+    "Event Stage",
+  ],
+  vehicles: [
+    "Pickup Truck",
+    "Mini Truck",
+    "Tipper",
+    "Water Tanker",
+    "Fuel Bowser",
+  ],
+};
+
+// Small deterministic pseudo-random helper so data is stable across reloads.
+const seeded = (n: number) => {
+  const x = Math.sin(n * 9973) * 10000;
+  return x - Math.floor(x);
+};
+
+const buildProducts = (): Product[] => {
+  const products: Product[] = [];
+  let i = 0;
+
+  for (const [category, items] of Object.entries(TAXONOMY)) {
+    const base = CATEGORY_BASE_PRICE[category] ?? 50;
+    const image = CATEGORY_IMAGE[category];
+
+    items.forEach((title) => {
+      i += 1;
+      const r = seeded(i);
+      const priceJitter = 0.85 + seeded(i + 1) * 0.4; // 0.85x - 1.25x
+      const price = Math.max(5, Math.round((base * priceJitter) / 5) * 5);
+      const rating = Math.round((3.8 + seeded(i + 2) * 1.2) * 10) / 10; // 3.8 - 5.0
+      const reviewsCount = Math.floor(seeded(i + 3) * 60) + 3;
+
+      products.push({
+        id: `p${i}`,
+        vendorId: VENDOR_IDS[i % VENDOR_IDS.length],
+        title,
+        description: `${title} available for daily, weekly and monthly rental. Well maintained and inspected before every hire. Delivery and operator support available on request.`,
+        price,
+        images: [image],
+        category,
+        availability: r > 0.18, // ~82% available
+        location: LOCATIONS[i % LOCATIONS.length],
+        rating,
+        reviewsCount,
+        featured: seeded(i + 4) > 0.82,
+        popular: seeded(i + 5) > 0.7,
+        createdAt: "2026-05-01",
+      });
+    });
+  }
+
+  return products;
+};
+
+export const PRODUCTS: Product[] = buildProducts();
 
 export const getProduct = (id: string) => PRODUCTS.find((p) => p.id === id);
 export const getProductsByVendor = (vendorId: string) =>

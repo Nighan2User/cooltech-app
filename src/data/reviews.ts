@@ -7,7 +7,7 @@ export const REVIEWS: Review[] = [
     userId: "u2",
     userName: "Michael Chen",
     rating: 5,
-    comment: "Worked perfectly for my deck project. Batteries lasted all day.",
+    comment: "Machine arrived on time and ran flawlessly for the whole job. Will rent again.",
     createdAt: "2026-04-22",
   },
   {
@@ -16,7 +16,7 @@ export const REVIEWS: Review[] = [
     userId: "u3",
     userName: "Sarah Johnson",
     rating: 4,
-    comment: "Good drill, came clean and well charged. Easy pickup.",
+    comment: "Well maintained and clean. Pickup and drop-off were easy.",
     createdAt: "2026-04-18",
   },
   {
@@ -25,16 +25,16 @@ export const REVIEWS: Review[] = [
     userId: "u3",
     userName: "Sarah Johnson",
     rating: 4,
-    comment: "Cooled my apartment fast during the heatwave. A bit heavy though.",
+    comment: "Solid equipment and fair daily rate. Operator support was helpful.",
     createdAt: "2026-05-02",
   },
   {
     id: "r4",
-    productId: "p3",
+    productId: "p4",
     userId: "u2",
     userName: "Michael Chen",
     rating: 5,
-    comment: "Crystal clear sound for our wedding. Vendor was super helpful!",
+    comment: "Powerful and reliable on site. The vendor was responsive and professional.",
     createdAt: "2026-05-10",
   },
 ];

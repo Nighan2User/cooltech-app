@@ -17,7 +17,7 @@ const PRICE_RANGES = [
   { key: "high", label: "$100+", min: 100, max: Infinity },
 ];
 
-const SUGGESTIONS = ["Drill", "Air Conditioner", "Projector", "Generator", "Sound System"];
+const SUGGESTIONS = ["Excavator", "Generator", "Forklift", "Scaffolding", "Pressure Washer"];
 
 export default function Search() {
   const router = useRouter();
