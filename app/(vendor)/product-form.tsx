@@ -1,4 +1,12 @@
-import { Pressable, ScrollView, Text, View } from "react-native";
+import { useState } from "react";
+import {
+  Modal,
+  Pressable,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
@@ -12,7 +20,86 @@ import { DEMO_VENDOR_ID } from "@/constants/session";
 import Input from "@/components/Input";
 import Button from "@/components/Button";
 
-const PLACEHOLDER = "https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=800";
+const PLACEHOLDER =
+  "https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=800";
+
+// ─── reusable dropdown component ────────────────────────────────────────────
+interface DropdownProps {
+  label: string;
+  placeholder: string;
+  value: string;
+  options: { label: string; value: string }[];
+  onChange: (val: string) => void;
+  error?: string;
+}
+
+function Dropdown({ label, placeholder, value, options, onChange, error }: DropdownProps) {
+  const [open, setOpen] = useState(false);
+  const selected = options.find((o) => o.value === value);
+
+  return (
+    <View className="mb-4">
+      <Text className="mb-1.5 text-sm font-medium text-secondary">{label}</Text>
+      <Pressable
+        onPress={() => setOpen(true)}
+        className={`flex-row items-center rounded-xl border bg-white px-4 py-3.5 ${
+          error ? "border-red-400" : "border-slate-200"
+        }`}
+      >
+        <Text className={`flex-1 text-sm ${selected ? "text-secondary" : "text-muted"}`}>
+          {selected ? selected.label : placeholder}
+        </Text>
+        <Ionicons name="chevron-down" size={18} color="#94A3B8" />
+      </Pressable>
+      {error && <Text className="mt-1 text-xs text-red-500">{error}</Text>}
+
+      <Modal visible={open} transparent animationType="fade">
+        <Pressable
+          className="flex-1 bg-black/40"
+          onPress={() => setOpen(false)}
+        >
+          <View className="mx-4 mt-auto mb-8 max-h-96 overflow-hidden rounded-2xl bg-white">
+            <View className="flex-row items-center justify-between border-b border-slate-100 px-4 py-3">
+              <Text className="text-base font-semibold text-secondary">{label}</Text>
+              <Pressable onPress={() => setOpen(false)}>
+                <Ionicons name="close" size={22} color="#64748B" />
+              </Pressable>
+            </View>
+            <ScrollView keyboardShouldPersistTaps="handled">
+              {options.map((opt) => {
+                const active = opt.value === value;
+                return (
+                  <TouchableOpacity
+                    key={opt.value}
+                    onPress={() => {
+                      onChange(opt.value);
+                      setOpen(false);
+                    }}
+                    className={`flex-row items-center px-4 py-3.5 border-b border-slate-50 ${
+                      active ? "bg-primary/5" : ""
+                    }`}
+                  >
+                    <Text
+                      className={`flex-1 text-sm ${
+                        active ? "font-semibold text-primary" : "text-secondary"
+                      }`}
+                    >
+                      {opt.label}
+                    </Text>
+                    {active && (
+                      <Ionicons name="checkmark" size={18} color="#2563EB" />
+                    )}
+                  </TouchableOpacity>
+                );
+              })}
+            </ScrollView>
+          </View>
+        </Pressable>
+      </Modal>
+    </View>
+  );
+}
+// ────────────────────────────────────────────────────────────────────────────
 
 export default function ProductFormScreen() {
   const router = useRouter();
@@ -40,28 +127,27 @@ export default function ProductFormScreen() {
   });
 
   const selectedCat = watch("category");
-  
-  // Get available items for the selected category
-  const availableItems = selectedCat && TAXONOMY[selectedCat] ? TAXONOMY[selectedCat] : [];
-  
-  // Fallback test data if TAXONOMY isn't loading
-  const testItems = selectedCat === "home-appliances" ? [
-    "Mixer Grinder", "Refrigerator", "Air Conditioner", "Washing Machine", "Microwave Oven"
-  ] : [];
-  
-  const itemsToShow = availableItems.length > 0 ? availableItems : testItems;
-  
-  console.log("Selected category:", selectedCat);
-  console.log("Available items:", availableItems.length);
-  console.log("Test items:", testItems.length);
-  console.log("Items to show:", itemsToShow.length);
+  const selectedTitle = watch("title");
+
+  // Build category options from CATEGORIES list
+  const categoryOptions = CATEGORIES.map((c) => ({ label: c.name, value: c.id }));
+
+  // Build item options for selected category
+  const itemOptions = selectedCat && TAXONOMY[selectedCat]
+    ? TAXONOMY[selectedCat].map((item) => ({ label: item, value: item }))
+    : [];
 
   const onSubmit = (data: ProductForm) => {
     const image = data.image || PLACEHOLDER;
+    // Auto-generate description if blank
+    const description =
+      data.description ||
+      `${data.title} available for daily, weekly and monthly rental. Well maintained and inspected before every hire.`;
+
     if (isEdit && existing) {
       updateProduct(existing.id, {
         title: data.title,
-        description: data.description,
+        description,
         price: Number(data.price),
         category: data.category,
         location: data.location,
@@ -71,7 +157,7 @@ export default function ProductFormScreen() {
       addProduct({
         vendorId: DEMO_VENDOR_ID,
         title: data.title,
-        description: data.description,
+        description,
         price: Number(data.price),
         category: data.category,
         location: data.location,
@@ -87,35 +173,68 @@ export default function ProductFormScreen() {
   return (
     <SafeAreaView className="flex-1 bg-bg" edges={["top"]}>
       <View className="flex-row items-center px-5 pb-2 pt-2">
-        <Pressable onPress={() => router.back()} className="h-10 w-10 items-center justify-center rounded-full bg-white">
+        <Pressable
+          onPress={() => router.back()}
+          className="h-10 w-10 items-center justify-center rounded-full bg-white"
+        >
           <Ionicons name="chevron-back" size={22} color="#0F172A" />
         </Pressable>
-        <Text className="ml-2 text-xl font-bold text-secondary">{isEdit ? "Edit Product" : "Add Product"}</Text>
+        <Text className="ml-2 text-xl font-bold text-secondary">
+          {isEdit ? "Edit Product" : "Add Product"}
+        </Text>
       </View>
 
-      <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: 40 }} keyboardShouldPersistTaps="handled">
+      <ScrollView
+        contentContainerStyle={{ padding: 20, paddingBottom: 40 }}
+        keyboardShouldPersistTaps="handled"
+      >
+        {/* Category Dropdown */}
         <Controller
           control={control}
-          name="title"
-          render={({ field: { onChange, value } }) => (
-            <Input label="Product Title" icon="pricetag-outline" placeholder="e.g. Power Drill" value={value} onChangeText={onChange} error={errors.title?.message} />
+          name="category"
+          render={({ field: { value } }) => (
+            <Dropdown
+              label="Category"
+              placeholder="Select a category"
+              value={value}
+              options={categoryOptions}
+              onChange={(val) => {
+                setValue("category", val, { shouldValidate: true });
+                // Reset item selection when category changes
+                setValue("title", "", { shouldValidate: false });
+              }}
+              error={errors.category?.message}
+            />
           )}
         />
 
-        <Controller
-          control={control}
-          name="description"
-          render={({ field: { onChange, value } }) => (
-            <Input label="Description" icon="document-text-outline" placeholder="Describe your product" multiline value={value} onChangeText={onChange} error={errors.description?.message} />
-          )}
-        />
+        {/* Item Dropdown — only shown when a category with items is selected */}
+        {selectedCat && itemOptions.length > 0 && (
+          <Controller
+            control={control}
+            name="title"
+            render={({ field: { value } }) => (
+              <Dropdown
+                label="Product Type"
+                placeholder="Select an item"
+                value={value}
+                options={itemOptions}
+                onChange={(val) =>
+                  setValue("title", val, { shouldValidate: true })
+                }
+                error={errors.title?.message}
+              />
+            )}
+          />
+        )}
 
+        {/* Price */}
         <Controller
           control={control}
           name="price"
           render={({ field: { onChange, value } }) => (
             <Input
-              label="Price per day ($)"
+              label="Price per day (₹)"
               icon="cash-outline"
               keyboardType="numeric"
               placeholder="0"
@@ -126,84 +245,45 @@ export default function ProductFormScreen() {
           )}
         />
 
-        {/* Category selector - First Dropdown */}
-        <Text className="mb-1.5 text-sm font-medium text-secondary">Category</Text>
-        <View className="mb-4 flex-row flex-wrap">
-          {CATEGORIES.map((c) => {
-            const active = selectedCat === c.id;
-            return (
-              <Pressable
-                key={c.id}
-                onPress={() => {
-                  console.log("Category clicked:", c.id);
-                  setValue("category", c.id, { shouldValidate: true });
-                  // Clear title when category changes
-                  setValue("title", "");
-                }}
-                className={`mb-2 mr-2 rounded-full border px-3 py-2 ${active ? "border-primary bg-primary/10" : "border-slate-200 bg-white"}`}
-              >
-                <Text className={`text-xs font-medium ${active ? "text-primary" : "text-muted"}`}>{c.name}</Text>
-              </Pressable>
-            );
-          })}
-        </View>
-        {errors.category && <Text className="-mt-2 mb-3 text-xs text-red-500">{errors.category.message}</Text>}
-
-        {/* DEBUG INFO - Remove after testing */}
-        {selectedCat && (
-          <View className="mb-4 bg-yellow-100 p-3 rounded">
-            <Text className="text-xs text-gray-800">DEBUG: Category = {selectedCat}</Text>
-            <Text className="text-xs text-gray-800">Items from TAXONOMY: {availableItems.length}</Text>
-            <Text className="text-xs text-gray-800">Fallback test items: {testItems.length}</Text>
-            <Text className="text-xs text-gray-800">Total items to show: {itemsToShow.length}</Text>
-            <Text className="text-xs text-gray-800">Will show dropdown: {(selectedCat && itemsToShow.length > 0) ? 'YES' : 'NO'}</Text>
-          </View>
-        )}
-
-        {/* Item selector - Second Dropdown (shows when category is selected) */}
-        {selectedCat && itemsToShow.length > 0 && (
-          <>
-            <Text className="mb-1.5 text-sm font-medium text-secondary">Select Product Type</Text>
-            <ScrollView 
-              horizontal 
-              showsHorizontalScrollIndicator={false}
-              className="mb-4"
-              contentContainerStyle={{ paddingRight: 20 }}
-            >
-              {itemsToShow.map((item) => {
-                const active = watch("title") === item;
-                return (
-                  <Pressable
-                    key={item}
-                    onPress={() => setValue("title", item, { shouldValidate: true })}
-                    className={`mb-2 mr-2 rounded-lg border px-4 py-3 ${active ? "border-primary bg-primary/10" : "border-slate-200 bg-white"}`}
-                  >
-                    <Text className={`text-sm font-medium ${active ? "text-primary" : "text-muted"}`}>{item}</Text>
-                  </Pressable>
-                );
-              })}
-            </ScrollView>
-          </>
-        )}
-
+        {/* Location */}
         <Controller
           control={control}
           name="location"
           render={({ field: { onChange, value } }) => (
-            <Input label="Location" icon="location-outline" placeholder="City, State" value={value} onChangeText={onChange} error={errors.location?.message} />
+            <Input
+              label="Location"
+              icon="location-outline"
+              placeholder="City, State"
+              value={value}
+              onChangeText={onChange}
+              error={errors.location?.message}
+            />
           )}
         />
 
+        {/* Image URL */}
         <Controller
           control={control}
           name="image"
           render={({ field: { onChange, value } }) => (
-            <Input label="Image URL (optional)" icon="image-outline" placeholder="https://..." autoCapitalize="none" value={value} onChangeText={onChange} error={errors.image?.message} />
+            <Input
+              label="Image URL (optional)"
+              icon="image-outline"
+              placeholder="https://..."
+              autoCapitalize="none"
+              value={value}
+              onChangeText={onChange}
+              error={errors.image?.message}
+            />
           )}
         />
 
         <View className="mt-2">
-          <Button label={isEdit ? "Save Changes" : "Add Product"} icon="checkmark" onPress={handleSubmit(onSubmit)} />
+          <Button
+            label={isEdit ? "Save Changes" : "Add Product"}
+            icon="checkmark"
+            onPress={handleSubmit(onSubmit)}
+          />
         </View>
       </ScrollView>
     </SafeAreaView>

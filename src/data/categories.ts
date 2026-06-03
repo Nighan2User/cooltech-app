@@ -29,6 +29,9 @@ export const CATEGORIES: Category[] = [
   { id: "music-instruments", name: "Music Instruments & Audio", icon: "musical-notes", color: "#8B5CF6" },
   { id: "photography", name: "Photography & Videography", icon: "camera", color: "#EC4899" },
   { id: "defence-psu", name: "Defence / DRDO / PSU Premium", icon: "shield", color: "#14532D" },
+  { id: "event-party", name: "Event & Party Rentals", icon: "balloon", color: "#F97316" },
+  { id: "adventure-sports", name: "Adventure & Sports", icon: "bicycle", color: "#059669" },
+  { id: "prewedding-costumes", name: "Pre-Wedding & Costume Rentals", icon: "rose", color: "#BE185D" },
 ];
 
 export const getCategory = (id: string) =>

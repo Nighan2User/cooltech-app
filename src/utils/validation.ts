@@ -25,8 +25,8 @@ export const profileSchema = z.object({
 export type ProfileForm = z.infer<typeof profileSchema>;
 
 export const productSchema = z.object({
-  title: z.string().min(3, "Title is too short"),
-  description: z.string().min(10, "Add a longer description"),
+  title: z.string().min(1, "Select a product type"),
+  description: z.string().optional().default(""),
   price: z.coerce.number().positive("Price must be greater than 0"),
   category: z.string().min(1, "Select a category"),
   location: z.string().min(2, "Add a location"),
