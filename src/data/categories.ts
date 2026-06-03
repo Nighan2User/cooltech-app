@@ -21,6 +21,14 @@ export const CATEGORIES: Category[] = [
   { id: "safety", name: "Safety Equipment", icon: "shield-checkmark", color: "#E11D48" },
   { id: "event", name: "Event & Temporary Infra", icon: "calendar", color: "#DB2777" },
   { id: "vehicles", name: "Vehicle Rentals", icon: "car", color: "#1D4ED8" },
+  { id: "home-appliances", name: "Home Appliances", icon: "home", color: "#10B981" },
+  { id: "office-equipment", name: "Office Equipment & Furniture", icon: "briefcase", color: "#3B82F6" },
+  { id: "medical-equipment", name: "Hospital & Medical Equipment", icon: "medical", color: "#EF4444" },
+  { id: "industrial-heavy", name: "Industrial Heavy Equipment", icon: "settings", color: "#6366F1" },
+  { id: "construction-heavy", name: "Heavy Construction Equipment", icon: "construct-outline", color: "#F59E0B" },
+  { id: "music-instruments", name: "Music Instruments & Audio", icon: "musical-notes", color: "#8B5CF6" },
+  { id: "photography", name: "Photography & Videography", icon: "camera", color: "#EC4899" },
+  { id: "defence-psu", name: "Defence / DRDO / PSU Premium", icon: "shield", color: "#14532D" },
 ];
 
 export const getCategory = (id: string) =>

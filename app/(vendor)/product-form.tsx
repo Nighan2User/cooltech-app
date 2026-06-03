@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ProductForm, productSchema } from "@/utils/validation";
 import { useProductStore } from "@/store/productStore";
 import { CATEGORIES } from "@/data/categories";
+import { TAXONOMY } from "@/data/products";
 import { DEMO_VENDOR_ID } from "@/constants/session";
 import Input from "@/components/Input";
 import Button from "@/components/Button";
@@ -39,6 +40,21 @@ export default function ProductFormScreen() {
   });
 
   const selectedCat = watch("category");
+  
+  // Get available items for the selected category
+  const availableItems = selectedCat && TAXONOMY[selectedCat] ? TAXONOMY[selectedCat] : [];
+  
+  // Fallback test data if TAXONOMY isn't loading
+  const testItems = selectedCat === "home-appliances" ? [
+    "Mixer Grinder", "Refrigerator", "Air Conditioner", "Washing Machine", "Microwave Oven"
+  ] : [];
+  
+  const itemsToShow = availableItems.length > 0 ? availableItems : testItems;
+  
+  console.log("Selected category:", selectedCat);
+  console.log("Available items:", availableItems.length);
+  console.log("Test items:", testItems.length);
+  console.log("Items to show:", itemsToShow.length);
 
   const onSubmit = (data: ProductForm) => {
     const image = data.image || PLACEHOLDER;
@@ -110,7 +126,7 @@ export default function ProductFormScreen() {
           )}
         />
 
-        {/* Category selector */}
+        {/* Category selector - First Dropdown */}
         <Text className="mb-1.5 text-sm font-medium text-secondary">Category</Text>
         <View className="mb-4 flex-row flex-wrap">
           {CATEGORIES.map((c) => {
@@ -118,7 +134,12 @@ export default function ProductFormScreen() {
             return (
               <Pressable
                 key={c.id}
-                onPress={() => setValue("category", c.id, { shouldValidate: true })}
+                onPress={() => {
+                  console.log("Category clicked:", c.id);
+                  setValue("category", c.id, { shouldValidate: true });
+                  // Clear title when category changes
+                  setValue("title", "");
+                }}
                 className={`mb-2 mr-2 rounded-full border px-3 py-2 ${active ? "border-primary bg-primary/10" : "border-slate-200 bg-white"}`}
               >
                 <Text className={`text-xs font-medium ${active ? "text-primary" : "text-muted"}`}>{c.name}</Text>
@@ -127,6 +148,43 @@ export default function ProductFormScreen() {
           })}
         </View>
         {errors.category && <Text className="-mt-2 mb-3 text-xs text-red-500">{errors.category.message}</Text>}
+
+        {/* DEBUG INFO - Remove after testing */}
+        {selectedCat && (
+          <View className="mb-4 bg-yellow-100 p-3 rounded">
+            <Text className="text-xs text-gray-800">DEBUG: Category = {selectedCat}</Text>
+            <Text className="text-xs text-gray-800">Items from TAXONOMY: {availableItems.length}</Text>
+            <Text className="text-xs text-gray-800">Fallback test items: {testItems.length}</Text>
+            <Text className="text-xs text-gray-800">Total items to show: {itemsToShow.length}</Text>
+            <Text className="text-xs text-gray-800">Will show dropdown: {(selectedCat && itemsToShow.length > 0) ? 'YES' : 'NO'}</Text>
+          </View>
+        )}
+
+        {/* Item selector - Second Dropdown (shows when category is selected) */}
+        {selectedCat && itemsToShow.length > 0 && (
+          <>
+            <Text className="mb-1.5 text-sm font-medium text-secondary">Select Product Type</Text>
+            <ScrollView 
+              horizontal 
+              showsHorizontalScrollIndicator={false}
+              className="mb-4"
+              contentContainerStyle={{ paddingRight: 20 }}
+            >
+              {itemsToShow.map((item) => {
+                const active = watch("title") === item;
+                return (
+                  <Pressable
+                    key={item}
+                    onPress={() => setValue("title", item, { shouldValidate: true })}
+                    className={`mb-2 mr-2 rounded-lg border px-4 py-3 ${active ? "border-primary bg-primary/10" : "border-slate-200 bg-white"}`}
+                  >
+                    <Text className={`text-sm font-medium ${active ? "text-primary" : "text-muted"}`}>{item}</Text>
+                  </Pressable>
+                );
+              })}
+            </ScrollView>
+          </>
+        )}
 
         <Controller
           control={control}
