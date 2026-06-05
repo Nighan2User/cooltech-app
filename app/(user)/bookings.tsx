@@ -8,42 +8,48 @@ import { BookingStatus } from "@/types";
 import BookingCard from "@/components/BookingCard";
 import EmptyState from "@/components/EmptyState";
 
-const TABS: { key: "all" | "active" | "completed"; label: string }[] = [
-  { key: "all", label: "All" },
+const TABS: { key: "active" | "upcoming" | "completed" | "pending"; label: string }[] = [
   { key: "active", label: "Active" },
-  { key: "completed", label: "History" },
+  { key: "upcoming", label: "Upcoming" },
+  { key: "completed", label: "Completed" },
+  { key: "pending", label: "Pending" },
 ];
 
-const ACTIVE: BookingStatus[] = ["pending", "approved", "active"];
-const DONE: BookingStatus[] = ["completed", "cancelled", "rejected"];
+const STATUS_MAP: Record<string, "active" | "upcoming" | "completed" | "pending"> = {
+  pending: "pending",
+  approved: "upcoming",
+  active: "active",
+  completed: "completed",
+  cancelled: "pending",
+  rejected: "pending",
+};
 
 export default function Bookings() {
   const router = useRouter();
   const bookings = useBookingStore((s) => s.bookings);
   const user = useAuthStore((s) => s.user);
-  const [tab, setTab] = useState<"all" | "active" | "completed">("all");
+  const [tab, setTab] = useState<"active" | "upcoming" | "completed" | "pending">("active");
 
   const mine = bookings.filter((b) => b.userId === "u1" || b.userId === user?.id);
   const filtered = mine.filter((b) => {
-    if (tab === "active") return ACTIVE.includes(b.status);
-    if (tab === "completed") return DONE.includes(b.status);
-    return true;
+    const mappedStatus = STATUS_MAP[b.status] || b.status;
+    return mappedStatus === tab;
   });
 
   return (
     <SafeAreaView className="flex-1 bg-bg" edges={["top"]}>
       <View className="px-5 pb-3 pt-2">
-        <Text className="text-2xl font-bold text-secondary">My Bookings</Text>
+        <Text className="text-2xl font-bold text-secondary">My Rentals</Text>
       </View>
 
-      <View className="flex-row px-5">
+      <View className="flex-row gap-2 overflow-x-auto px-5">
         {TABS.map((t) => {
           const active = tab === t.key;
           return (
             <Pressable
               key={t.key}
               onPress={() => setTab(t.key)}
-              className={`mr-2 rounded-full px-4 py-2 ${active ? "bg-primary" : "bg-white"}`}
+              className={`rounded-full px-4 py-2 ${active ? "bg-primary" : "bg-white"}`}
             >
               <Text className={`text-sm font-medium ${active ? "text-white" : "text-muted"}`}>
                 {t.label}

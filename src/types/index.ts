@@ -70,6 +70,12 @@ export interface Booking {
   createdAt: string;
 }
 
+export interface CartItem {
+  productId: string;
+  quantity: number;
+  addedAt: string;
+}
+
 export interface Review {
   id: string;
   productId: string;

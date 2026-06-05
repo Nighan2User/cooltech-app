@@ -3,11 +3,13 @@ import { Ionicons } from "@expo/vector-icons";
 import { View, Text } from "react-native";
 import { COLORS } from "@/constants/theme";
 import { useBookingStore } from "@/store/bookingStore";
+import { useCartStore } from "@/store/cartStore";
 
 export default function UserTabsLayout() {
   const activeBookings = useBookingStore(
     (s) => s.bookings.filter((b) => ["pending", "approved", "active"].includes(b.status)).length
   );
+  const cartCount = useCartStore((s) => s.items.length);
 
   return (
     <Tabs
@@ -49,6 +51,22 @@ export default function UserTabsLayout() {
               {activeBookings > 0 && (
                 <View className="absolute -right-2 -top-1 h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1">
                   <Text className="text-[9px] font-bold text-white">{activeBookings}</Text>
+                </View>
+              )}
+            </View>
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="cart"
+        options={{
+          title: "Cart",
+          tabBarIcon: ({ color, size }) => (
+            <View>
+              <Ionicons name="cart" size={size} color={color} />
+              {cartCount > 0 && (
+                <View className="absolute -right-2 -top-1 h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1">
+                  <Text className="text-[9px] font-bold text-white">{cartCount}</Text>
                 </View>
               )}
             </View>

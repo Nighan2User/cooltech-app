@@ -6,7 +6,9 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Alert,
 } from "react-native";
+import { Image } from "expo-image";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
@@ -14,9 +16,10 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ProductForm, productSchema } from "@/utils/validation";
 import { useProductStore } from "@/store/productStore";
-import { CATEGORIES } from "@/data/categories";
+import { useCategoryStore } from "@/store/categoryStore";
 import { TAXONOMY } from "@/data/products";
 import { DEMO_VENDOR_ID } from "@/constants/session";
+import { pickImage } from "@/utils/imagePicker";
 import Input from "@/components/Input";
 import Button from "@/components/Button";
 
@@ -107,6 +110,9 @@ export default function ProductFormScreen() {
   const { products, addProduct, updateProduct } = useProductStore();
   const existing = id ? products.find((p) => p.id === id) : undefined;
   const isEdit = !!existing;
+  const [selectedImage, setSelectedImage] = useState<string>(
+    existing?.images[0] || ""
+  );
 
   const {
     control,
@@ -128,14 +134,28 @@ export default function ProductFormScreen() {
 
   const selectedCat = watch("category");
   const selectedTitle = watch("title");
+  const categories = useCategoryStore((s) => s.categories);
 
-  // Build category options from CATEGORIES list
-  const categoryOptions = CATEGORIES.map((c) => ({ label: c.name, value: c.id }));
+  // Build category options from the category store
+  const categoryOptions = categories.map((c) => ({ label: c.name, value: c.id }));
 
   // Build item options for selected category
   const itemOptions = selectedCat && TAXONOMY[selectedCat]
     ? TAXONOMY[selectedCat].map((item) => ({ label: item, value: item }))
     : [];
+
+  const handleImagePick = async () => {
+    const image = await pickImage();
+    if (image) {
+      setSelectedImage(image.uri);
+      setValue("image", image.uri, { shouldValidate: true });
+    }
+  };
+
+  const clearImage = () => {
+    setSelectedImage("");
+    setValue("image", "", { shouldValidate: true });
+  };
 
   const onSubmit = (data: ProductForm) => {
     const image = data.image || PLACEHOLDER;
@@ -261,22 +281,39 @@ export default function ProductFormScreen() {
           )}
         />
 
-        {/* Image URL */}
-        <Controller
-          control={control}
-          name="image"
-          render={({ field: { onChange, value } }) => (
-            <Input
-              label="Image URL (optional)"
-              icon="image-outline"
-              placeholder="https://..."
-              autoCapitalize="none"
-              value={value}
-              onChangeText={onChange}
-              error={errors.image?.message}
-            />
-          )}
-        />
+        {/* Image Picker */}
+        <View className="mb-4">
+          <Text className="mb-2 text-sm font-medium text-secondary">
+            Product Image
+          </Text>
+          {selectedImage ? (
+            <View className="mb-3 overflow-hidden rounded-2xl bg-slate-100">
+              <Image
+                source={{ uri: selectedImage }}
+                style={{ width: "100%", height: 200 }}
+                contentFit="cover"
+              />
+              <View className="absolute right-2 top-2">
+                <Pressable
+                  onPress={clearImage}
+                  className="h-8 w-8 items-center justify-center rounded-full bg-red-500"
+                >
+                  <Ionicons name="close" size={16} color="#fff" />
+                </Pressable>
+              </View>
+            </View>
+          ) : null}
+          <Pressable
+            onPress={handleImagePick}
+            className="flex-row items-center justify-center rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 py-6"
+          >
+            <Ionicons name="image-outline" size={24} color="#94A3B8" />
+            <Text className="ml-2 font-medium text-slate-600">
+              {selectedImage ? "Change Image" : "Pick Image from Gallery"}
+            </Text>
+          </Pressable>
+          <Text className="mt-1 text-xs text-muted">Max 1MB</Text>
+        </View>
 
         <View className="mt-2">
           <Button

@@ -4,7 +4,7 @@ import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { useProductStore } from "@/store/productStore";
-import { CATEGORIES } from "@/data/categories";
+import { useCategoryStore } from "@/store/categoryStore";
 import { getVendor } from "@/data/vendors";
 import SearchBar from "@/components/SearchBar";
 import ProductCard from "@/components/ProductCard";
@@ -22,6 +22,7 @@ const SUGGESTIONS = ["Excavator", "Generator", "Forklift", "Scaffolding", "Press
 export default function Search() {
   const router = useRouter();
   const products = useProductStore((s) => s.products);
+  const categories = useCategoryStore((s) => s.categories);
   const [query, setQuery] = useState("");
   const [cat, setCat] = useState<string | null>(null);
   const [priceKey, setPriceKey] = useState("all");
@@ -62,7 +63,7 @@ export default function Search() {
       {/* Filters */}
       <View>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, paddingVertical: 6 }}>
-          {CATEGORIES.map((c) => {
+          {categories.map((c) => {
             const active = cat === c.id;
             return (
               <Pressable

@@ -1,4 +1,4 @@
-import { Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -30,14 +30,39 @@ export default function Welcome() {
           />
         </View>
 
-        <View className="pb-6">
-          <Button
-            label="Get Started"
-            variant="secondary"
-            icon="arrow-forward"
-            onPress={() => router.push("/(auth)/login")}
-          />
-          <Text className="mt-4 text-center text-xs text-white/60">
+        <View className="pb-6 gap-3">
+          <View>
+            <Text className="mb-2 text-sm font-semibold text-white">New User?</Text>
+            <View className="gap-2">
+              <Button
+                label="Sign Up as Renter"
+                variant="secondary"
+                icon="person-add"
+                onPress={() => router.push("/(auth)/signup-renter")}
+              />
+              <Button
+                label="Sign Up as Vendor"
+                variant="secondary"
+                icon="storefront"
+                onPress={() => router.push("/(auth)/signup-vendor")}
+              />
+            </View>
+          </View>
+
+          <View className="h-px bg-white/20" />
+
+          <View>
+            <Text className="mb-2 text-sm font-semibold text-white">Existing User?</Text>
+            <Pressable
+              onPress={() => router.push("/(auth)/login")}
+              className="flex-row items-center justify-center rounded-2xl border border-white/30 bg-white/10 px-5 py-3"
+            >
+              <Ionicons name="log-in-outline" size={18} color="#fff" />
+              <Text className="ml-2 text-base font-semibold text-white">Sign In</Text>
+            </Pressable>
+          </View>
+
+          <Text className="mt-2 text-center text-xs text-white/60">
             By continuing you agree to our Terms & Privacy Policy
           </Text>
         </View>

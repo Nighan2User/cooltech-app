@@ -4,7 +4,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { useProductStore } from "@/store/productStore";
-import { getCategory } from "@/data/categories";
+import { useCategoryStore } from "@/store/categoryStore";
 import ProductCard from "@/components/ProductCard";
 import EmptyState from "@/components/EmptyState";
 
@@ -21,10 +21,11 @@ export default function CategoryScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const products = useProductStore((s) => s.products);
-  const category = getCategory(id as string);
+  const category = useCategoryStore((s) => s.categories.find((c) => c.id === id));
 
   const [sort, setSort] = useState<Sort>("popular");
   const [availableOnly, setAvailableOnly] = useState(false);
+  const [showWeek, setShowWeek] = useState(false);
 
   const list = useMemo(() => {
     let items = products.filter((p) => p.category === id);
@@ -48,51 +49,53 @@ export default function CategoryScreen() {
   return (
     <SafeAreaView className="flex-1 bg-bg" edges={["top"]}>
       <View className="flex-row items-center px-5 pb-2 pt-2">
-        <Pressable onPress={() => router.back()} className="h-10 w-10 items-center justify-center rounded-full bg-white">
+        <Pressable onPress={() => router.back()} className="h-10 w-10 items-center justify-center rounded-full bg-white shadow-sm" style={{ elevation: 1 }}>
           <Ionicons name="chevron-back" size={22} color="#0F172A" />
         </Pressable>
-        <Text className="ml-2 text-xl font-bold text-secondary">{category?.name ?? "Category"}</Text>
+        <Text className="ml-3 text-xl font-bold text-secondary">{category?.name ?? "Category"}</Text>
       </View>
 
-      {/* Filters */}
-      <View>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ paddingHorizontal: 20, paddingVertical: 8 }}
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={{ paddingHorizontal: 20, paddingVertical: 12 }}
+      >
+        <Pressable
+          onPress={() => setSort((current) => (current === "popular" ? "price_low" : current === "price_low" ? "price_high" : current === "price_high" ? "rating" : "popular"))}
+          className={`mr-3 rounded-full px-4 py-3 ${sort !== "rating" ? "bg-white" : "bg-blue-600"}`}
+          style={{ minWidth: 98 }}
         >
-          <Pressable
-            onPress={() => setAvailableOnly((v) => !v)}
-            className={`mr-2 flex-row items-center rounded-full px-3 py-2 ${availableOnly ? "bg-primary" : "bg-white"}`}
-          >
-            <Ionicons name="checkmark-circle" size={14} color={availableOnly ? "#fff" : "#64748B"} />
-            <Text className={`ml-1 text-xs font-medium ${availableOnly ? "text-white" : "text-muted"}`}>
-              Available
-            </Text>
-          </Pressable>
-          {SORTS.map((s) => {
-            const active = sort === s.key;
-            return (
-              <Pressable
-                key={s.key}
-                onPress={() => setSort(s.key)}
-                className={`mr-2 rounded-full px-3 py-2 ${active ? "bg-primary" : "bg-white"}`}
-              >
-                <Text className={`text-xs font-medium ${active ? "text-white" : "text-muted"}`}>{s.label}</Text>
-              </Pressable>
-            );
-          })}
-        </ScrollView>
-      </View>
+          <Text className={`text-xs font-semibold ${sort !== "rating" ? "text-secondary" : "text-white"}`}>Sort</Text>
+        </Pressable>
+        <Pressable
+          onPress={() => setSort((current) => (current === "price_low" ? "price_high" : "price_low"))}
+          className="mr-3 rounded-full bg-white px-4 py-3"
+          style={{ minWidth: 98 }}
+        >
+          <Text className="text-xs font-semibold text-secondary">Price</Text>
+        </Pressable>
+        <Pressable
+          onPress={() => setAvailableOnly((v) => !v)}
+          className={`mr-3 rounded-full px-4 py-3 ${availableOnly ? "bg-blue-600" : "bg-white"}`}
+          style={{ minWidth: 98 }}
+        >
+          <Text className={`text-xs font-semibold ${availableOnly ? "text-white" : "text-secondary"}`}>Availability</Text>
+        </Pressable>
+        <Pressable
+          onPress={() => setShowWeek((v) => !v)}
+          className={`rounded-full px-4 py-3 ${showWeek ? "bg-blue-600" : "bg-white"}`}
+          style={{ minWidth: 98 }}
+        >
+          <Text className={`text-xs font-semibold ${showWeek ? "text-white" : "text-secondary"}`}>Duration</Text>
+        </Pressable>
+      </ScrollView>
 
       <FlatList
         data={list}
         keyExtractor={(p) => p.id}
-        numColumns={2}
-        columnWrapperStyle={{ justifyContent: "space-between" }}
-        contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 8, flexGrow: 1 }}
+        contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 8, flexGrow: 1, paddingBottom: 24 }}
         showsVerticalScrollIndicator={false}
-        renderItem={({ item }) => <ProductCard product={item} />}
+        renderItem={({ item }) => <ProductCard product={item} variant="list" />}
         ListEmptyComponent={<EmptyState icon="cube-outline" title="No rentals here yet" />}
       />
     </SafeAreaView>
