@@ -1,4 +1,4 @@
-import { Alert, FlatList, Pressable, Text, View } from "react-native";
+import { Alert, FlatList, Platform, Pressable, Text, View } from "react-native";
 import { Image } from "expo-image";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
@@ -15,6 +15,12 @@ export default function AdminApprovals() {
     updateProduct(id, { featured: !current });
 
   const remove = (id: string, title: string) => {
+    if (Platform.OS === "web") {
+      if (window.confirm(`Permanently remove "${title}"?`)) {
+        deleteProduct(id);
+      }
+      return;
+    }
     Alert.alert("Remove listing", `Permanently remove "${title}"?`, [
       { text: "Cancel", style: "cancel" },
       { text: "Remove", style: "destructive", onPress: () => deleteProduct(id) },

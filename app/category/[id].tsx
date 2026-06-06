@@ -214,12 +214,14 @@ export default function CategoryScreen() {
                   {option.label}
                 </Text>
                 {sort === option.key && (
-                  <Ionicons
-                    name="checkmark"
-                    size={16}
-                    color="#2563EB"
-                    style={{ marginLeft: "auto" }}
-                  />
+                  <>
+                    <View style={{ flex: 1 }} />
+                    <Ionicons
+                      name="checkmark"
+                      size={16}
+                      color="#2563EB"
+                    />
+                  </>
                 )}
               </Pressable>
             ))}

@@ -18,6 +18,7 @@ export default function RootLayout() {
           <Stack.Screen name="product/[id]" options={{ presentation: "card" }} />
           <Stack.Screen name="booking/[id]" />
           <Stack.Screen name="search" options={{ presentation: "modal" }} />
+          <Stack.Screen name="cart" options={{ headerShown: false }} />
         </Stack>
       </SafeAreaProvider>
     </GestureHandlerRootView>

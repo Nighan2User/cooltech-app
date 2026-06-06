@@ -110,7 +110,7 @@ export default function CartScreen() {
             <Text className="text-sm font-semibold text-secondary">Clear</Text>
           </Pressable>
         </View>
-        <Button label="Proceed to Checkout" icon="cart" onPress={() => router.push("/booking/new?productId=" + cartItems[0].productId)} />
+        <Button label="Proceed to Checkout" icon="cart" onPress={() => router.push(`/booking/new` as any)} />
       </SafeAreaView>
     </SafeAreaView>
   );

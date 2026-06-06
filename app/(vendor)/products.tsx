@@ -1,4 +1,4 @@
-import { Alert, FlatList, Pressable, Switch, Text, View } from "react-native";
+import { Alert, FlatList, Platform, Pressable, Switch, Text, View } from "react-native";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -16,6 +16,12 @@ export default function VendorProducts() {
   const deleteProduct = useProductStore((s) => s.deleteProduct);
 
   const onDelete = (id: string, title: string) => {
+    if (Platform.OS === "web") {
+      if (window.confirm(`Remove "${title}" from your listings?`)) {
+        deleteProduct(id);
+      }
+      return;
+    }
     Alert.alert("Delete product", `Remove "${title}" from your listings?`, [
       { text: "Cancel", style: "cancel" },
       { text: "Delete", style: "destructive", onPress: () => deleteProduct(id) },

@@ -1,4 +1,4 @@
-import { Alert, Modal, Pressable, ScrollView, Text, View } from "react-native";
+import { Alert, Modal, Platform, Pressable, ScrollView, Text, View } from "react-native";
 import { Image } from "expo-image";
 import { useState } from "react";
 import { useRouter } from "expo-router";
@@ -66,7 +66,11 @@ export default function AdminDashboard() {
 
   const createCategory = () => {
     if (!newCategoryName.trim()) {
-      Alert.alert("Validation", "Category name is required.");
+      if (Platform.OS === "web") {
+        window.alert("Category name is required.");
+      } else {
+        Alert.alert("Validation", "Category name is required.");
+      }
       return;
     }
     addCategory({
@@ -82,7 +86,11 @@ export default function AdminDashboard() {
 
   const createProduct = () => {
     if (!newProductTitle.trim() || !newProductCategory || !newProductLocation.trim() || !newProductPrice.trim()) {
-      Alert.alert("Validation", "Please complete all required product fields.");
+      if (Platform.OS === "web") {
+        window.alert("Please complete all required product fields.");
+      } else {
+        Alert.alert("Validation", "Please complete all required product fields.");
+      }
       return;
     }
 
@@ -130,10 +138,21 @@ export default function AdminDashboard() {
       body: "Admin broadcast: 15% off all rentals this weekend!",
       type: "promo",
     });
-    Alert.alert("Sent", "Promotional push notification broadcast to all users.");
+    if (Platform.OS === "web") {
+      window.alert("Sent: Promotional push notification broadcast to all users.");
+    } else {
+      Alert.alert("Sent", "Promotional push notification broadcast to all users.");
+    }
   };
 
   const confirmLogout = () => {
+    if (Platform.OS === "web") {
+      if (window.confirm("Log out of admin panel?")) {
+        logout();
+        router.replace("/(auth)/welcome");
+      }
+      return;
+    }
     Alert.alert("Log out", "Log out of admin panel?", [
       { text: "Cancel", style: "cancel" },
       { text: "Log out", style: "destructive", onPress: () => { logout(); router.replace("/(auth)/welcome"); } },

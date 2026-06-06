@@ -1,4 +1,4 @@
-import { Alert, Linking, Pressable, ScrollView, Text, View } from "react-native";
+import { Alert, Linking, Platform, Pressable, ScrollView, Text, View } from "react-native";
 import { Image } from "expo-image";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -31,6 +31,12 @@ export default function BookingDetail() {
   const canCancel = ["pending", "approved"].includes(booking.status);
 
   const onCancel = () => {
+    if (Platform.OS === "web") {
+      if (window.confirm("Are you sure you want to cancel this booking?")) {
+        cancelBooking(booking.id);
+      }
+      return;
+    }
     Alert.alert("Cancel booking", "Are you sure you want to cancel this booking?", [
       { text: "Keep", style: "cancel" },
       { text: "Cancel Booking", style: "destructive", onPress: () => cancelBooking(booking.id) },
@@ -109,8 +115,7 @@ export default function BookingDetail() {
               className="h-10 w-10 items-center justify-center rounded-full bg-green-100"
             >
               <Ionicons name="logo-whatsapp" size={18} color="#16A34A" />
-            </Pressable>
-          </View>
+            </Pressable>          </View>
         </View>
 
         {/* Actions */}
@@ -120,7 +125,13 @@ export default function BookingDetail() {
               label="Download Invoice"
               variant="outline"
               icon="download-outline"
-              onPress={() => Alert.alert("Invoice", "Invoice generation is simulated in this demo.")}
+              onPress={() => {
+                if (Platform.OS === "web") {
+                  window.alert("Invoice generation is simulated in this demo.");
+                } else {
+                  Alert.alert("Invoice", "Invoice generation is simulated in this demo.");
+                }
+              }}
             />
           </View>
           {canCancel && (
