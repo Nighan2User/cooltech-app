@@ -11,9 +11,11 @@ import RatingStars from "./RatingStars";
 interface Props {
   product: Product;
   variant?: "grid" | "list" | "wide";
+  /** When true, emphasise the weekly price in the list variant */
+  showWeeklyPrice?: boolean;
 }
 
-export default function ProductCard({ product, variant = "grid" }: Props) {
+export default function ProductCard({ product, variant = "grid", showWeeklyPrice = false }: Props) {
   const router = useRouter();
   const vendor = getVendor(product.vendorId);
   const { isFavorite, toggle } = useFavoritesStore();
@@ -50,13 +52,27 @@ export default function ProductCard({ product, variant = "grid" }: Props) {
 
           <View className="mt-3 flex-row items-end justify-between">
             <View>
-              <Text className="text-base font-bold text-secondary">
-                {formatCurrency(product.price)}
-                <Text className="text-xs font-normal text-muted">/day</Text>
-              </Text>
-              <Text className="mt-1 text-sm font-medium text-muted">
-                {formatCurrency(weeklyPrice)}/week
-              </Text>
+              {showWeeklyPrice ? (
+                <>
+                  <Text className="text-base font-bold text-blue-600">
+                    {formatCurrency(weeklyPrice)}
+                    <Text className="text-xs font-normal text-muted">/week</Text>
+                  </Text>
+                  <Text className="mt-0.5 text-xs text-muted">
+                    {formatCurrency(product.price)}/day
+                  </Text>
+                </>
+              ) : (
+                <>
+                  <Text className="text-base font-bold text-secondary">
+                    {formatCurrency(product.price)}
+                    <Text className="text-xs font-normal text-muted">/day</Text>
+                  </Text>
+                  <Text className="mt-1 text-sm font-medium text-muted">
+                    {formatCurrency(weeklyPrice)}/week
+                  </Text>
+                </>
+              )}
             </View>
             <View className="items-end">
               <View

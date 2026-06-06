@@ -1,4 +1,4 @@
-import { Alert, Pressable, ScrollView, Text, View } from "react-native";
+import { Alert, Platform, Pressable, ScrollView, Text, View } from "react-native";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -23,6 +23,14 @@ export default function Profile() {
   const favCount = useFavoritesStore((s) => s.ids.length);
 
   const confirmLogout = () => {
+    if (Platform.OS === "web") {
+      // Alert.alert is a no-op on web — use the browser's native confirm dialog
+      if (window.confirm("Are you sure you want to log out?")) {
+        logout();
+        router.replace("/(auth)/welcome");
+      }
+      return;
+    }
     Alert.alert("Log out", "Are you sure you want to log out?", [
       { text: "Cancel", style: "cancel" },
       {

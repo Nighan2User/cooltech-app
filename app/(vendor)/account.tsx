@@ -1,4 +1,4 @@
-import { Alert, Pressable, ScrollView, Text, View } from "react-native";
+import { Alert, Platform, Pressable, ScrollView, Text, View } from "react-native";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -13,6 +13,14 @@ export default function VendorAccount() {
   const vendor = getVendor(DEMO_VENDOR_ID);
 
   const confirmLogout = () => {
+    if (Platform.OS === "web") {
+      // Alert.alert is a no-op on web — use the browser's native confirm dialog
+      if (window.confirm("Log out of vendor account?")) {
+        logout();
+        router.replace("/(auth)/welcome");
+      }
+      return;
+    }
     Alert.alert("Log out", "Log out of vendor account?", [
       { text: "Cancel", style: "cancel" },
       {
