@@ -3,7 +3,6 @@ import { Ionicons } from "@expo/vector-icons";
 import { View, Text, Platform } from "react-native";
 import { COLORS } from "@/constants/theme";
 import { useBookingStore } from "@/store/bookingStore";
-import FloatingCompareBar from "@/components/FloatingCompareBar";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function UserTabsLayout() {
@@ -129,7 +128,6 @@ export default function UserTabsLayout() {
         <Tabs.Screen name="loyalty" options={{ href: null }} />
         <Tabs.Screen name="language" options={{ href: null }} />
       </Tabs>
-      <FloatingCompareBar />
     </>
   );
 }
