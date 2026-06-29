@@ -6,13 +6,21 @@ import { Ionicons } from "@expo/vector-icons";
 import { useAuthStore } from "@/store/authStore";
 import { useBookingStore } from "@/store/bookingStore";
 import { useFavoritesStore } from "@/store/favoritesStore";
+import { useCartStore } from "@/store/cartStore";
 
 interface Row {
   icon: keyof typeof Ionicons.glyphMap;
   label: string;
   onPress?: () => void;
-  danger?: boolean;
   value?: string;
+  badge?: number;
+  iconBg?: string;
+  iconColor?: string;
+}
+
+interface Section {
+  title: string;
+  rows: Row[];
 }
 
 export default function Profile() {
@@ -21,10 +29,11 @@ export default function Profile() {
   const allBookings = useBookingStore((s) => s.bookings);
   const bookings = allBookings.filter((b) => b.userId === "u1" || b.userId === user?.id);
   const favCount = useFavoritesStore((s) => s.ids.length);
+  const cartCount = useCartStore((s) => s.items.length);
+  const activeBookings = bookings.filter((b) => ["pending", "approved", "active"].includes(b.status)).length;
 
   const confirmLogout = () => {
     if (Platform.OS === "web") {
-      // Alert.alert is a no-op on web — use the browser's native confirm dialog
       if (window.confirm("Are you sure you want to log out?")) {
         logout();
         router.replace("/(auth)/welcome");
@@ -44,103 +53,260 @@ export default function Profile() {
     ]);
   };
 
-  const myAccountRows: Row[] = [
-    { icon: "person-outline", label: "Personal Information", onPress: () => router.push("/(user)/edit-profile") },
-    { icon: "location-outline", label: "Saved Addresses", onPress: () => router.push("/(user)/favorites") },
-    { icon: "card-outline", label: "Payment Methods", onPress: () => router.push("/(user)/favorites") },
-    { icon: "shield-checkmark-outline", label: "KYC Verification", value: "Verified" },
-    { icon: "receipt-outline", label: "Rental History", onPress: () => router.push("/(user)/bookings") },
-  ];
-
-  const othersRows: Row[] = [
-    { icon: "help-circle-outline", label: "Help & Support", onPress: () => router.push("/(user)/support") },
-    { icon: "settings-outline", label: "Settings", onPress: () => router.push("/(user)/support") },
+  const sections: Section[] = [
+    {
+      title: "Account",
+      rows: [
+        { 
+          icon: "person-outline", 
+          label: "Personal Information", 
+          onPress: () => router.push("/(user)/edit-profile"),
+          iconBg: "#EEF2FF",
+          iconColor: "#6366F1"
+        },
+        { 
+          icon: "shield-checkmark-outline", 
+          label: "Identity Verification", 
+          value: user?.isVerified ? "Verified" : "Not Verified",
+          onPress: () => router.push("/(user)/verify-identity"),
+          iconBg: user?.isVerified ? "#D1FAE5" : "#FEF3C7",
+          iconColor: user?.isVerified ? "#10B981" : "#F59E0B"
+        },
+      ],
+    },
+    {
+      title: "Rentals",
+      rows: [
+        { 
+          icon: "calendar-outline", 
+          label: "My Bookings", 
+          badge: activeBookings,
+          onPress: () => router.push("/(user)/bookings"),
+          iconBg: "#DBEAFE",
+          iconColor: "#3B82F6"
+        },
+        { 
+          icon: "heart-outline", 
+          label: "Wishlist", 
+          badge: favCount,
+          onPress: () => router.push("/(user)/favorites"),
+          iconBg: "#FCE7F3",
+          iconColor: "#EC4899"
+        },
+        { 
+          icon: "time-outline", 
+          label: "Recently Viewed", 
+          onPress: () => router.push("/(user)/products"),
+          iconBg: "#E0E7FF",
+          iconColor: "#818CF8"
+        },
+        { 
+          icon: "cart-outline", 
+          label: "Shopping Cart", 
+          badge: cartCount,
+          onPress: () => router.push("/(user)/cart"),
+          iconBg: "#FEE2E2",
+          iconColor: "#EF4444"
+        },
+      ],
+    },
+    {
+      title: "Payments",
+      rows: [
+        { 
+          icon: "wallet-outline", 
+          label: "Wallet", 
+          onPress: () => router.push("/(user)/wallet"),
+          iconBg: "#D1FAE5",
+          iconColor: "#059669"
+        },
+        { 
+          icon: "pricetag-outline", 
+          label: "Coupons & Offers", 
+          onPress: () => router.push("/(user)/coupons"),
+          iconBg: "#FEF3C7",
+          iconColor: "#D97706"
+        },
+        { 
+          icon: "gift-outline", 
+          label: "Loyalty Rewards", 
+          onPress: () => router.push("/(user)/loyalty"),
+          iconBg: "#FECACA",
+          iconColor: "#DC2626"
+        },
+      ],
+    },
+    {
+      title: "Preferences",
+      rows: [
+        { 
+          icon: "notifications-outline", 
+          label: "Notifications", 
+          onPress: () => router.push("/(user)/notifications"),
+          iconBg: "#FEE2E2",
+          iconColor: "#F87171"
+        },
+        { 
+          icon: "language-outline", 
+          label: "Language", 
+          value: "English",
+          onPress: () => router.push("/(user)/language"),
+          iconBg: "#E0E7FF",
+          iconColor: "#6366F1"
+        },
+        { 
+          icon: "moon-outline", 
+          label: "Dark Mode", 
+          value: "Off",
+          onPress: () => router.push("/(user)/settings"),
+          iconBg: "#E0E7FF",
+          iconColor: "#4F46E5"
+        },
+      ],
+    },
+    {
+      title: "Support",
+      rows: [
+        { 
+          icon: "help-circle-outline", 
+          label: "Help Center", 
+          onPress: () => router.push("/(user)/support"),
+          iconBg: "#DBEAFE",
+          iconColor: "#2563EB"
+        },
+        { 
+          icon: "chatbubble-ellipses-outline", 
+          label: "Contact Support", 
+          onPress: () => router.push("/(user)/messages"),
+          iconBg: "#E0E7FF",
+          iconColor: "#7C3AED"
+        },
+      ],
+    },
+    {
+      title: "Legal",
+      rows: [
+        { 
+          icon: "document-text-outline", 
+          label: "Privacy Policy", 
+          onPress: () => router.push("/(user)/support"),
+          iconBg: "#F3F4F6",
+          iconColor: "#6B7280"
+        },
+        { 
+          icon: "shield-outline", 
+          label: "Terms & Conditions", 
+          onPress: () => router.push("/(user)/support"),
+          iconBg: "#F3F4F6",
+          iconColor: "#6B7280"
+        },
+      ],
+    },
   ];
 
   return (
-    <SafeAreaView className="flex-1 bg-bg" edges={["top"]}>
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 32 }}>
-        {/* Blue header with profile info */}
-        <View className="bg-primary px-5 py-6">
-          <View className="flex-row items-center">
+    <SafeAreaView className="flex-1 bg-slate-50" edges={["top"]}>
+      <ScrollView 
+        showsVerticalScrollIndicator={false} 
+        contentContainerStyle={{ paddingBottom: 100 }}
+      >
+        {/* Header with profile info */}
+        <View className="bg-gradient-to-br from-primary to-blue-600 px-5 pb-8 pt-4">
+          <Text className="mb-6 text-2xl font-bold text-white">Profile</Text>
+          <Pressable 
+            onPress={() => router.push("/(user)/edit-profile")}
+            className="flex-row items-center"
+          >
             {user?.avatar ? (
-              <Image source={{ uri: user.avatar }} style={{ width: 80, height: 80, borderRadius: 40 }} />
+              <Image 
+                source={{ uri: user.avatar }} 
+                style={{ width: 72, height: 72, borderRadius: 36 }} 
+              />
             ) : (
-              <View className="h-20 w-20 items-center justify-center rounded-full bg-white/20" style={{ width: 80, height: 80 }}>
-                <Ionicons name="person" size={40} color="#fff" />
+              <View 
+                className="items-center justify-center rounded-full bg-white/25" 
+                style={{ width: 72, height: 72 }}
+              >
+                <Ionicons name="person" size={36} color="#fff" />
               </View>
             )}
             <View className="ml-4 flex-1">
-              <Text className="text-2xl font-bold text-white">{user?.name}</Text>
-              <Text className="text-sm text-white/80">{user?.email || "user@example.com"}</Text>
-              <Text className="text-sm text-white/80">{user?.phone}</Text>
+              <Text className="text-xl font-bold text-white">{user?.name || "Guest User"}</Text>
+              <Text className="mt-0.5 text-sm text-white/90">{user?.email || "user@example.com"}</Text>
+              {user?.phone && <Text className="mt-0.5 text-sm text-white/80">{user.phone}</Text>}
             </View>
-            <Pressable className="h-10 w-10 items-center justify-center rounded-full bg-white/20">
+            <View className="h-10 w-10 items-center justify-center rounded-full bg-white/20">
               <Ionicons name="chevron-forward" size={20} color="#fff" />
-            </Pressable>
-          </View>
+            </View>
+          </Pressable>
         </View>
 
-        {/* My Account Section */}
-        <View className="mx-5 mt-6">
-          <Text className="mb-2 text-sm font-semibold text-muted">My Account</Text>
-          <View className="rounded-2xl bg-white shadow-sm" style={{ elevation: 1 }}>
-            {myAccountRows.map((row, i) => (
-              <Pressable
-                key={row.label}
-                onPress={row.onPress}
-                className={`flex-row items-center px-4 py-4 ${
-                  i < myAccountRows.length - 1 ? "border-b border-slate-100" : ""
-                }`}
-              >
-                <View className="h-9 w-9 items-center justify-center rounded-full bg-slate-100">
-                  <Ionicons name={row.icon} size={18} color="#0F172A" />
-                </View>
-                <Text className="ml-3 flex-1 text-base text-secondary">{row.label}</Text>
-                {row.value === "Verified" && (
-                  <View className="mr-2 flex-row items-center">
-                    <Ionicons name="checkmark-circle" size={16} color="#10B981" />
-                    <Text className="ml-1 text-xs font-semibold text-emerald-600">{row.value}</Text>
+        {/* Sections */}
+        {sections.map((section, sectionIndex) => (
+          <View key={section.title} className="mt-6 px-5">
+            <Text className="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-500">
+              {section.title}
+            </Text>
+            <View className="overflow-hidden rounded-2xl bg-white shadow-sm" style={{ elevation: 1 }}>
+              {section.rows.map((row, rowIndex) => (
+                <Pressable
+                  key={row.label}
+                  onPress={row.onPress}
+                  className={`flex-row items-center px-4 py-4 ${
+                    rowIndex < section.rows.length - 1 ? "border-b border-slate-100" : ""
+                  }`}
+                  style={({ pressed }) => ({
+                    backgroundColor: pressed ? "#F8FAFC" : "transparent",
+                  })}
+                >
+                  <View 
+                    className="h-10 w-10 items-center justify-center rounded-full" 
+                    style={{ backgroundColor: row.iconBg || "#F1F5F9" }}
+                  >
+                    <Ionicons 
+                      name={row.icon} 
+                      size={20} 
+                      color={row.iconColor || "#64748B"} 
+                    />
                   </View>
-                )}
-                {!row.value && <Ionicons name="chevron-forward" size={18} color="#CBD5E1" />}
-              </Pressable>
-            ))}
+                  <Text className="ml-3 flex-1 text-base font-medium text-slate-800">
+                    {row.label}
+                  </Text>
+                  {row.badge !== undefined && row.badge > 0 && (
+                    <View className="mr-2 min-w-6 items-center justify-center rounded-full bg-primary px-2 py-0.5">
+                      <Text className="text-xs font-bold text-white">
+                        {row.badge > 99 ? "99+" : row.badge}
+                      </Text>
+                    </View>
+                  )}
+                  {row.value && (
+                    <Text className="mr-2 text-sm font-medium text-slate-500">{row.value}</Text>
+                  )}
+                  <Ionicons name="chevron-forward" size={18} color="#CBD5E1" />
+                </Pressable>
+              ))}
+            </View>
           </View>
-        </View>
-
-        {/* Others Section */}
-        <View className="mx-5 mt-6">
-          <Text className="mb-2 text-sm font-semibold text-muted">Others</Text>
-          <View className="rounded-2xl bg-white shadow-sm" style={{ elevation: 1 }}>
-            {othersRows.map((row, i) => (
-              <Pressable
-                key={row.label}
-                onPress={row.onPress}
-                className={`flex-row items-center px-4 py-4 ${
-                  i < othersRows.length - 1 ? "border-b border-slate-100" : ""
-                }`}
-              >
-                <View className="h-9 w-9 items-center justify-center rounded-full bg-slate-100">
-                  <Ionicons name={row.icon} size={18} color="#0F172A" />
-                </View>
-                <Text className="ml-3 flex-1 text-base text-secondary">{row.label}</Text>
-                <Ionicons name="chevron-forward" size={18} color="#CBD5E1" />
-              </Pressable>
-            ))}
-          </View>
-        </View>
+        ))}
 
         {/* Logout Button */}
-        <View className="mx-5 mt-6">
+        <View className="mx-5 mt-8 mb-4">
           <Pressable
             onPress={confirmLogout}
             className="flex-row items-center justify-center rounded-2xl bg-red-50 py-4 shadow-sm"
-            style={{ elevation: 1 }}
+            style={({ pressed }) => ({
+              backgroundColor: pressed ? "#FEE2E2" : "#FEF2F2",
+              elevation: 1,
+            })}
           >
-            <Ionicons name="log-out-outline" size={20} color="#DC2626" />
-            <Text className="ml-2 text-base font-semibold text-red-600">Logout</Text>
+            <Ionicons name="log-out-outline" size={22} color="#DC2626" />
+            <Text className="ml-2 text-base font-bold text-red-600">Logout</Text>
           </Pressable>
+        </View>
+
+        {/* App Version */}
+        <View className="items-center pb-4">
+          <Text className="text-xs text-slate-400">Version 1.0.0</Text>
         </View>
       </ScrollView>
     </SafeAreaView>
