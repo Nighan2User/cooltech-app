@@ -34,11 +34,27 @@ export default function VendorAccount() {
     ]);
   };
 
-  const rows: { icon: keyof typeof Ionicons.glyphMap; label: string }[] = [
-    { icon: "storefront-outline", label: "Store Settings" },
-    { icon: "card-outline", label: "Payout Methods" },
-    { icon: "bar-chart-outline", label: "Earnings Report" },
-    { icon: "help-circle-outline", label: "Help & Support" },
+  const rows: { icon: keyof typeof Ionicons.glyphMap; label: string; route: string }[] = [
+    { 
+      icon: "storefront-outline", 
+      label: "Store Settings",
+      route: "/(vendor)/store-settings"
+    },
+    { 
+      icon: "card-outline", 
+      label: "Payout Methods",
+      route: "/(vendor)/payout-methods"
+    },
+    { 
+      icon: "bar-chart-outline", 
+      label: "Earnings Report",
+      route: "/(vendor)/earnings-report"
+    },
+    { 
+      icon: "help-circle-outline", 
+      label: "Help & Support",
+      route: "/(vendor)/help-support"
+    },
   ];
 
   return (
@@ -72,6 +88,7 @@ export default function VendorAccount() {
             {rows.map((row, i) => (
               <Pressable
                 key={row.label}
+                onPress={() => router.push(row.route as any)}
                 className={`flex-row items-center px-4 py-3.5 ${i < rows.length - 1 ? "border-b border-slate-100" : ""}`}
               >
                 <View className="h-9 w-9 items-center justify-center rounded-full bg-slate-100">
