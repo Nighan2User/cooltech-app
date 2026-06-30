@@ -42,7 +42,7 @@ export default function ProductCard({ product, variant = "grid", showWeeklyPrice
               {product.title}
             </Text>
             <Text className="mt-1 text-xs text-muted" numberOfLines={1}>
-              {vendor?.name} · {product.location}
+              {vendor?.name} • {product.location}
             </Text>
             <View className="mt-2 flex-row items-center">
               <RatingStars rating={product.rating} count={product.reviewsCount} size={12} />

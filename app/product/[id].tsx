@@ -117,7 +117,7 @@ export default function ProductDetails() {
                   <Ionicons name="checkmark-circle" size={15} color="#2563EB" style={{ marginLeft: 4 }} />
                 )}
               </View>
-              <Text className="text-xs text-muted">{vendor?.totalProducts} rentals · ⭐ {vendor?.rating}</Text>
+              <Text className="text-xs text-muted">{vendor?.totalProducts} rentals • ⭐ {vendor?.rating}</Text>
             </View>
             <Pressable className="h-9 w-9 items-center justify-center rounded-full bg-primary/10">
               <Ionicons name="chatbubble-ellipses-outline" size={18} color="#2563EB" />

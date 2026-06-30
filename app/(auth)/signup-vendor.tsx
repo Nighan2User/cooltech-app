@@ -118,7 +118,7 @@ export default function SignupVendor() {
           />
 
           <View className="flex-row items-center justify-center py-5">
-            <Text className="text-sm text-muted">Already have an account? </Text>
+            <Text className="text-sm text-muted">Already have an account?{" "}</Text>
             <Pressable onPress={() => router.replace("/(auth)/login")}>
               <Text className="text-sm font-semibold text-primary">Sign in</Text>
             </Pressable>

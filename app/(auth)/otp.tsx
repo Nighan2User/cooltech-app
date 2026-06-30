@@ -75,7 +75,7 @@ export default function Otp() {
         <Button label="Verify & Continue" icon="checkmark" onPress={handleSubmit(onSubmit)} />
 
         <View className="mt-6 flex-row items-center justify-center">
-          <Text className="text-sm text-muted">Didn't get the code? </Text>
+          <Text className="text-sm text-muted">Didn't get the code?{" "}</Text>
           <Pressable>
             <Text className="text-sm font-semibold text-primary">Resend</Text>
           </Pressable>

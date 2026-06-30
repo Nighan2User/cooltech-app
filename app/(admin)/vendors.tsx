@@ -42,7 +42,7 @@ export default function AdminVendors() {
                   {item.verified && <Ionicons name="checkmark-circle" size={15} color="#2563EB" style={{ marginLeft: 4 }} />}
                 </View>
                 <Text className="text-xs text-muted">{item.email}</Text>
-                <Text className="text-xs text-muted">⭐ {item.rating} · {item.totalProducts} products</Text>
+                <Text className="text-xs text-muted">⭐ {item.rating} • {item.totalProducts} products</Text>
               </View>
             </View>
             <View className="mt-3 border-t border-slate-100 pt-3">

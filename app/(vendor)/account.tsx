@@ -70,7 +70,7 @@ export default function VendorAccount() {
               {vendor?.verified && <Ionicons name="checkmark-circle" size={16} color="#2563EB" style={{ marginLeft: 4 }} />}
             </View>
             <Text className="text-sm text-muted">{vendor?.email}</Text>
-            <Text className="text-xs text-muted">⭐ {vendor?.rating} · {vendor?.totalProducts} products</Text>
+            <Text className="text-xs text-muted">⭐ {vendor?.rating} • {vendor?.totalProducts} products</Text>
           </View>
         </View>
 

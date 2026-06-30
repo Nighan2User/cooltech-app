@@ -56,7 +56,7 @@ export default function VendorProducts() {
               <View className="ml-3 flex-1">
                 <Text className="text-base font-semibold text-secondary" numberOfLines={1}>{item.title}</Text>
                 <Text className="text-sm font-bold text-primary">{formatCurrency(item.price)}/day</Text>
-                <Text className="text-xs text-muted">⭐ {item.rating} · {item.reviewsCount} reviews</Text>
+                <Text className="text-xs text-muted">⭐ {item.rating} • {item.reviewsCount} reviews</Text>
               </View>
             </View>
             <View className="mt-3 flex-row items-center justify-between border-t border-slate-100 pt-3">
