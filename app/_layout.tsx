@@ -17,8 +17,10 @@ export default function RootLayout() {
           <Stack.Screen name="(admin)" />
           <Stack.Screen name="product/[id]" options={{ presentation: "card" }} />
           <Stack.Screen name="booking/[id]" />
+          <Stack.Screen name="booking/new" />
           <Stack.Screen name="category/[id]" />
           <Stack.Screen name="search" options={{ presentation: "modal" }} />
+          <Stack.Screen name="test-dropdown" options={{ headerShown: false }} />
           <Stack.Screen name="vendor-settings" options={{ headerShown: false }} />
         </Stack>
       </SafeAreaProvider>
