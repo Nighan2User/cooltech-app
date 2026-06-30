@@ -38,22 +38,22 @@ export default function VendorAccount() {
     { 
       icon: "storefront-outline", 
       label: "Store Settings",
-      route: "/(vendor)/store-settings"
+      route: "/vendor-settings/store"
     },
     { 
       icon: "card-outline", 
       label: "Payout Methods",
-      route: "/(vendor)/payout-methods"
+      route: "/vendor-settings/payout"
     },
     { 
       icon: "bar-chart-outline", 
       label: "Earnings Report",
-      route: "/(vendor)/earnings-report"
+      route: "/vendor-settings/earnings"
     },
     { 
       icon: "help-circle-outline", 
       label: "Help & Support",
-      route: "/(vendor)/help-support"
+      route: "/vendor-settings/support"
     },
   ];
 

@@ -1,8 +1,14 @@
 [[redirects]]
   from = "/*"
-  to = "/index.html"
+  to = "/"
   status = 200
+  force = false
 
 [build]
   command = "npx expo export --platform web"
   publish = "dist"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
