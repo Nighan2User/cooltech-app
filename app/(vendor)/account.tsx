@@ -1,6 +1,6 @@
 import { Alert, Platform, Pressable, ScrollView, Text, View } from "react-native";
 import { Image } from "expo-image";
-import { useRouter, Link } from "expo-router";
+import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { useAuthStore } from "@/store/authStore";
@@ -34,26 +34,26 @@ export default function VendorAccount() {
     ]);
   };
 
-  const rows: { icon: keyof typeof Ionicons.glyphMap; label: string; route: string }[] = [
+  const rows: { icon: keyof typeof Ionicons.glyphMap; label: string; route: any }[] = [
     { 
       icon: "storefront-outline", 
       label: "Store Settings",
-      route: "/vendor-settings/store"
+      route: "/vendor-settings/store" as const
     },
     { 
       icon: "card-outline", 
       label: "Payout Methods",
-      route: "/vendor-settings/payout"
+      route: "/vendor-settings/payout" as const
     },
     { 
       icon: "bar-chart-outline", 
       label: "Earnings Report",
-      route: "/vendor-settings/earnings"
+      route: "/vendor-settings/earnings" as const
     },
     { 
       icon: "help-circle-outline", 
       label: "Help & Support",
-      route: "/vendor-settings/support"
+      route: "/vendor-settings/support" as const
     },
   ];
 
@@ -86,21 +86,17 @@ export default function VendorAccount() {
         <View className="mt-6 px-5">
           <View className="rounded-2xl bg-white shadow-sm" style={{ elevation: 1 }}>
             {rows.map((row, i) => (
-              <Link
+              <Pressable
                 key={row.label}
-                href={row.route as any}
-                asChild
+                onPress={() => router.push(row.route)}
+                className={`flex-row items-center px-4 py-3.5 ${i < rows.length - 1 ? "border-b border-slate-100" : ""}`}
               >
-                <Pressable
-                  className={`flex-row items-center px-4 py-3.5 ${i < rows.length - 1 ? "border-b border-slate-100" : ""}`}
-                >
-                  <View className="h-9 w-9 items-center justify-center rounded-full bg-slate-100">
-                    <Ionicons name={row.icon} size={18} color="#0F172A" />
-                  </View>
-                  <Text className="ml-3 flex-1 text-base text-secondary">{row.label}</Text>
-                  <Ionicons name="chevron-forward" size={18} color="#CBD5E1" />
-                </Pressable>
-              </Link>
+                <View className="h-9 w-9 items-center justify-center rounded-full bg-slate-100">
+                  <Ionicons name={row.icon} size={18} color="#0F172A" />
+                </View>
+                <Text className="ml-3 flex-1 text-base text-secondary">{row.label}</Text>
+                <Ionicons name="chevron-forward" size={18} color="#CBD5E1" />
+              </Pressable>
             ))}
           </View>
         </View>
