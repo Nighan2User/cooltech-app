@@ -118,13 +118,6 @@ export default function UserTabsLayout() {
         <Tabs.Screen name="edit-profile" options={{ href: null }} />
         <Tabs.Screen name="notifications" options={{ href: null }} />
         <Tabs.Screen name="support" options={{ href: null }} />
-        <Tabs.Screen name="wallet" options={{ href: null }} />
-        <Tabs.Screen name="coupons" options={{ href: null }} />
-        <Tabs.Screen name="messages" options={{ href: null }} />
-        <Tabs.Screen name="settings" options={{ href: null }} />
-        <Tabs.Screen name="compare" options={{ href: null }} />
-        <Tabs.Screen name="products" options={{ href: null }} />
-        <Tabs.Screen name="verify-identity" options={{ href: null }} />
         <Tabs.Screen name="loyalty" options={{ href: null }} />
         <Tabs.Screen name="language" options={{ href: null }} />
       </Tabs>

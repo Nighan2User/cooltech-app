@@ -192,7 +192,7 @@ export default function ProductDetails() {
           <Pressable
             onPress={() => {
               if (!inCart) addItem(product.id);
-              router.push("/cart");
+              router.push("/(user)/cart");
             }}
             className={`flex-1 items-center justify-center rounded-2xl border-2 py-3 ${inCart ? "border-slate-300 bg-slate-100" : "border-primary bg-white"}`}
             disabled={!product.availability}
